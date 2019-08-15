@@ -8,12 +8,12 @@ $db = new MyDB();
 
 // reading params
 try {
-    $tags = $_POST['tags'];
-    $tagsObj = json_decode($tags, true);
+    $body = $_POST['fetch'];
+    $body = json_decode($body, true);
     // escaping single quotes
-    $tagsArr1 = array_map($escapeQuotes, $tagsObj["tags1"]);
+    $tagsArr = array_map($escapeQuotes, $body["tags"]);
     // embedding
-    $tagsStr1 = "'" . join("', '", $tagsArr1) . "'";
+    $tagsStr = "'" . join("', '", $tagsArr) . "'";
 } catch (Exception $e) {
     $tagsStr = "''";
 }
@@ -36,7 +36,7 @@ $sql = "SELECT
             LEFT JOIN recipe_ingredient AS rn ON (rn.Id = ri.Id)
             LEFT JOIN ingredient_info AS ii ON (ii.Id = rn.ingredientId)
         WHERE ri.Id IN (
-            SELECT Id FROM recipe_tag WHERE Tag IN ($tagsStr1))
+            SELECT Id FROM recipe_tag WHERE Tag IN ($tagsStr))
         GROUP BY ri.Id
         ORDER BY FavoriteCount DESC, StarRating DESC, ri.Id
         LIMIT 50";

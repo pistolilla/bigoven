@@ -30,10 +30,12 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarColor02">
-            <ul class="navbar-nav  ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="?about=1">Ayuda</a>
-                </li>
+            <ul class="navbar-nav navbar-left">
+                <li class="nav-item"><a class="nav-link" href="/bigoven">Back-end</a></li>
+                <li class="nav-item"><a class="nav-link" href="/bigoven/frontend">Front-end</a></li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="?about=1">Ayuda</a></li>
             </ul>
         </div>
     </nav>
@@ -41,7 +43,7 @@
     <!-- about box -->
     <div id="aboutbox" class="alert alert-dismissible alert-primary m-2">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
-        Mini showcase de <i>BigOven</i> para explorar categorías (dietas)
+        Navegue en las categorías de <i><a href="https://www.bigoven.com" target="_blank">Big Oven</a></i> para crear dietas. Puede agrupar varias categorías en una sola dieta.
     </div>
 
     <!-- content -->
@@ -51,24 +53,24 @@
             <div class="card border-primary mb-2">
                 <div class="card-header">1. Elija una etiqueta</div>
                 <input id="filterleft" class="form-control-sm tagfilter" type="text" placeholder="Filtrar..">
-                <select id="tagsleft" multiple=""></select>
-                <p class="mt-0 mb-1 text-center"><small>(<i>Ctrl + clic</i> para seleccionar más)</small></p>
+                <select id="tags" multiple=""></select>
+                <p class="m-1 text-center"><small>(<i>Ctrl + clic</i> para seleccionar más)</small></p>
             </div>
-            <p id="tagsjson"></p>
+            <p id="tagssummary"></p>
             <!-- form -->
             <div class="card border-info mt-2">
                 <div class="card-header">2. Cree una dieta</div>
                 <p class="mt-1 mb-0">Nombre:</p>
-                <input name="name" class="form-control-sm" id="exampleInputPassword1" placeholder="(ej. Ovolactopescovegetariana)">
+                <input id="name" class="form-control-sm" id="exampleInputPassword1" required="" placeholder="(ej. Ovolactopescovegetariana)">
                 <p class="mt-1 mb-0">¿Es inclusiva o exclusiva?</p>
-                <select name="operator" class="form-control-sm" id="exampleSelect1">
+                <select id="operator" class="form-control-sm" id="exampleSelect1">
                     <option value="" selected="selected">(no aplica)</option>
                     <option value="inclusive">inclusiva</option>
                     <option value="exclusive">exclusiva</option>
                 </select>
                 <p class="mt-1 mb-0">Comentarios:</p>
-                <textarea name="comments" class="form-control-sm mb-1" rows="3" placeholder="(ej. huevo, #huevo, ovo)"></textarea>
-                <button type="button" class="btn btn-info btn-md btn-block">Crear</button>
+                <textarea id="comments" class="form-control-sm mb-1" rows="3" placeholder="(ej. huevo, #huevo, ovo)"></textarea>
+                <button id="submitbutton" type="button" class="btn btn-info btn-md btn-block">Crear</button>
             </div>
         </div>
         <div class="col-sm-12 col-md-9 col-lg-10 p-1">
@@ -116,27 +118,25 @@ $(function() {
     .done(function(result) {
         // iterating through results
         $.each(result, function(i, field) {
-            // populating tagsleft
+            // populating tags
             var tagDisplay = field.Tag;
             if (tagDisplay.length > 20)
                 tagDisplay = tagDisplay.substring(1, 20) + "..";
-            $("#tagsleft").append('<option value="' + field.Tag + '">' + tagDisplay + ' (' + field.c + ')</option>');
+            $("#tags").append('<option value="' + field.Tag + '">' + tagDisplay + ' (' + field.c + ')</option>');
         });
     })
     .fail($.ajaxError);
 
-    // tags listener
-    $("#tagsleft").on('change', function() {
+    // tags select listener
+    $("#tags").on('change', function() {
         // clearing and showing gifs
         $("#results, #diets").empty();
         $('#resultsgif, #dietsgif').show();
         // creating JSON object from select
-        var tags1 = $('#tagsleft').val();
+        var tags = $('#tags').val();
         // showing selection to user
-        $("#tagsjson").text(tags1.join(", "));
-        // encoding for http
-        tags1 = tags1.map(x => encodeURIComponent(x));
-        var postBody = 'tags=' + JSON.stringify({ tags1 });
+        $("#tagssummary").text(tags.join(", "));
+        var postBody = 'fetch=' + JSON.stringify({ tags });
 
         // recipes
         $.post("api/recipes/", postBody, function(result) {
@@ -174,10 +174,33 @@ $(function() {
 
     });
 
+    // form button listener
+    $("#submitbutton").click(function() {
+        // reading selected tags
+        var tags = $('#tags').val();
+        if (tags.length == 0) {
+            alert("No hay etiquetas seleccionadas");
+            return;
+        }
+        var name = $("#name").val();
+        if (name.length == 0) {
+            alert("El nombre es obligatorio");
+            return;
+        }
+        var operator = $("#operator").val();
+        var comments = $("#comments").val();
+        // creating post body
+        var postBody = 'post=' + JSON.stringify({ tags, name, operator, comments });
+        $.post("api/diets/", postBody, function(result) {
+            //iterating through results
+        }, 'json')
+        .fail($.ajaxError);
+    });
+
     //// filters
     $("#filterleft").on("keyup", function() {
         var value = $(this).val().toLowerCase();
-        $("#tagsleft option").filter(function() {
+        $("#tags option").filter(function() {
             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
     });
