@@ -6,27 +6,41 @@ header('Content-Type: application/json');
 // init
 $db = new MyDB();
 
-// query
-if ($_GET['tag']) {
-    $tag = $_GET['tag'];
-    $sql = "SELECT
-                ri.Id,
-                ri.Title,
-                ri.Servings,
-                ri.PhotoUrl,
-                ri.PrimaryIngredient,
-                ri.TotalMinutes,
-                ri.TotalCalories,
-                rr.StarRating,
-                rr.ReviewCount,
-                rr.FavoriteCount
-            FROM recipe_info AS ri
-            LEFT JOIN recipe_rating AS rr ON (rr.Id = ri.Id)
-            WHERE ri.Id IN (
-                SELECT Id FROM recipe_tag WHERE Tag = '$tag')";
-} else if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
+// reading params
+try {
+    $tags = $_POST['tags'];
+    $tagsObj = json_decode($tags, true);
+    // escaping single quotes
+    $tagsArr1 = array_map($escapeQuotes, $tagsObj["tags1"]);
+    // embedding
+    $tagsStr1 = "'" . join("', '", $tagsArr1) . "'";
+} catch (Exception $e) {
+    $tagsStr = "''";
 }
+
+// query
+$sql = "SELECT
+            ri.Id,
+            ri.Title,
+            ri.Servings,
+            ri.PhotoUrl,
+            ri.PrimaryIngredient,
+            ri.TotalMinutes,
+            ri.TotalCalories,
+            ROUND(rr.StarRating, 1) AS StarRating,
+            rr.ReviewCount,
+            rr.FavoriteCount,
+            LOWER(GROUP_CONCAT(ii.Name, ', ')) AS Ingredients
+        FROM recipe_info AS ri
+            LEFT JOIN recipe_rating AS rr ON (rr.Id = ri.Id)
+            LEFT JOIN recipe_ingredient AS rn ON (rn.Id = ri.Id)
+            LEFT JOIN ingredient_info AS ii ON (ii.Id = rn.ingredientId)
+        WHERE ri.Id IN (
+            SELECT Id FROM recipe_tag WHERE Tag IN ($tagsStr1))
+        GROUP BY ri.Id
+        ORDER BY FavoriteCount DESC, StarRating DESC, ri.Id
+        LIMIT 50";
+
 $res = $db->query($sql);
 
 $result = array();
@@ -44,6 +58,7 @@ while($row = $res->fetchArray(SQLITE3_ASSOC)) {
   $obj->StarRating = (string)$row['StarRating'];
   $obj->ReviewCount = (string)$row['ReviewCount'];
   $obj->FavoriteCount = (string)$row['FavoriteCount'];
+  $obj->Ingredients = (string)$row['Ingredients'];
 
   array_push($result, $obj);
 }

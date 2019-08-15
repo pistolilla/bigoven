@@ -4,6 +4,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Proyecto BigOven</title>
         <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootswatch/4.3.1/simplex/bootstrap.min.css">
+        <link href="//stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
         <script src="//ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
         <style>
@@ -40,31 +41,24 @@
     <!-- about box -->
     <div id="aboutbox" class="alert alert-dismissible alert-primary m-2">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Proyecto BigOven</strong> para traducir categorías y etiquetas (dietas) de comida
+        Mini showcase de <i>BigOven</i> para explorar categorías (dietas)
     </div>
 
     <!-- content -->
     <div class="row m-1">
-        <div class="col-sm-6 col-md-3 col-lg-2 p-1">
+        <div class="col-sm-12 col-md-3 col-lg-2 p-1">
             <div class="card border-primary">
-                <div class="card-header">1. Elija una etiqueta</div>
-                <input id="filterleft" class="form-control-sm tagfilter" type="text" placeholder="Filter..">
+                <div class="card-header">Elija una etiqueta</div>
+                <input id="filterleft" class="form-control-sm tagfilter" type="text" placeholder="Filtrar..">
                 <select id="tagsleft" multiple=""></select>
             </div>
         </div>
-        <div class="col-sm-6 col-md-3 col-lg-2 p-1">
-            <div class="card border-primary">
-                <div class="card-header">2. Another tag</div>
-                <input id="filterright" class="form-control-sm tagfilter" type="text" placeholder="Filter..">
-                <select id="tagsright" multiple=""></select>
-            </div>
-        </div>
-        <div class="col-sm-12 col-md-6 col-lg-8 p-1">
+        <div class="col-sm-12 col-md-9 col-lg-10 p-1">
             <div class="list-group">
-                <div class="list-group-item list-group-item-action active">Results</a>
+                <div class="list-group-item list-group-item-action active">Recetas</a>
             </div>
-            <img id="artistsgif" class="loadinggif" src="https://cdnjs.cloudflare.com/ajax/libs/galleriffic/2.0.1/css/loader.gif" loop="infinite" />
-            <div id="artists" class="list-group"></ul>
+            <img id="resultsgif" class="loadinggif" src="https://cdnjs.cloudflare.com/ajax/libs/galleriffic/2.0.1/css/loader.gif" loop="infinite" />
+            <div id="results" class="list-group"></div>
         </div>
     </div>
 
@@ -103,47 +97,41 @@ $(function() {
     })
     .fail($.ajaxError);
 
-    // tags left listener
+    // right tags listener
     $("#tagsleft").on('change', function() {
         // clearing
-        $("#filterright").val("");
-        $("#tagsright, #artists").empty();
-        // creating JSON object from select
-        var tags = $('#tagsleft').val();
-        // encoding for http
-        tags = tags.map(x => encodeURIComponent(x));
-        var postBody = 'tags=' + JSON.stringify(tags);
-        $.post("api/tags/", postBody, function(result) {
-            // iterating through results
-            $.each(result, function(i, field) {
-                // populating tagsleft
-                $("#tagsright").append('<option value="' + field.Tag + '">' + field.Tag + ' (' + field.c + ')</option>');
-            });
-
-        }, 'json')
-        .fail($.ajaxError);
-    });
-
-    // right tags listener
-    $("#tagsright").on('change', function() {
-        // clearing
-        $("#artists").empty();
-        $('#artistsgif').show();
+        $("#results").empty();
+        $('#resultsgif').show();
         // creating JSON object from select
         var tags1 = $('#tagsleft').val();
-        var tags2 = $('#tagsright').val();
         // encoding for http
         tags1 = tags1.map(x => encodeURIComponent(x));
-        tags2 = tags2.map(x => encodeURIComponent(x));
-        //console.log(tags2);
-        var postBody = 'tags=' + JSON.stringify({ tags1, tags2 });
+        var postBody = 'tags=' + JSON.stringify({ tags1 });
         //console.log(postBody);
-        $.post("api/artists/", postBody, function(result) {
-            $('#artistsgif').hide();
+        $.post("api/recipes/", postBody, function(result) {
+            $('#resultsgif').hide();
             //iterating through results
             $.each(result, function(i, field) {
-                // populating artists
-                $("#artists").append('<a href="' + field.Url + '" target="_blank" class="list-group-item list-group-item-action flex-column align-items-start"><div class="d-flex w-100 justify-content-between"><h5 class="mb-1">' + field.Artist + '</h5><small><span class="badge badge-pill badge-primary">' + field.c + '</span></small></div><p class="mb-1">' + field.Album + '</p><small>' + field.Tags + '</small></a>');
+                // populating results
+                $htmlblock = `
+                <div class="card">
+                    <div class="row no-gutters">
+                      <div style="max-width: 140px;">
+                        <img src="img256/${field.PhotoUrl}" class="card-img">
+                      </div>
+                      <div class="col">
+                            <div class="card-body">
+                                <a href="https://www.bigoven.com/recipe/r/${field.Id}" target="_blank">
+                                    <h5 class="mb-1">${field.Title}</h5>
+                                </a>
+                                <p class="mb-1">${field.PrimaryIngredient}</p>
+                                <p class="mb-1"><i class="fa fa-star" aria-hidden="true"></i> ${field.StarRating} (x${field.ReviewCount}) | <i class="fa fa-heartbeat" aria-hidden="true"></i> ${field.FavoriteCount} | <i class="fa fa-thermometer-half" aria-hidden="true"></i> ${field.TotalCalories} Cal. | <i class="fa fa-users" aria-hidden="true"></i> ${field.Servings}</p>
+                                <small>${field.Ingredients}</small>
+                            </div>
+                      </div>
+                    </div>
+                </div>`;
+                $("#results").append($htmlblock);
             });
 
         }, 'json')
@@ -154,13 +142,6 @@ $(function() {
     $("#filterleft").on("keyup", function() {
         var value = $(this).val().toLowerCase();
         $("#tagsleft option").filter(function() {
-            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-        });
-    });
-
-    $("#filterright").on("keyup", function() {
-        var value = $(this).val().toLowerCase();
-        $("#tagsright option").filter(function() {
             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
     });
