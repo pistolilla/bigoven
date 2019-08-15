@@ -1,0 +1,10 @@
+# Formatos de fotos
+https://photos.bigoven.com/recipe/hero/herb-roasted-turkey-breast-e4daf9.jpg
+https://bigoven-res.cloudinary.com/image/upload/t_recipe-256/herb-roasted-turkey-breast-e4daf9.jpg
+
+# Migrar db1 a db2 (con los dos abiertos en SQLiteStudio)
+INSERT INTO db2.recipe_category
+SELECT * FROM db1.recipe_category;
+
+INSERT INTO db2.recipe_cuisine
+SELECT * FROM db1.recipe_cuisine

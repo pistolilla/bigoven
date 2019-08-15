@@ -1,0 +1,172 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Proyecto BigOven</title>
+        <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootswatch/4.3.1/simplex/bootstrap.min.css">
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <style>
+            select {
+                height: 100px;
+                resize: vertical;
+                overflow: auto;
+            }
+            .loadinggif {
+                display: block;
+                margin: 10px auto;
+                width: 48;
+            }
+        </style>
+    </head>
+    <body>
+
+    <!-- navigation bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a href="?" class="navbar-brand">Proyecto BigOven <small>(beta)</small></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarColor02">
+            <ul class="navbar-nav  ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="?about=1">Ayuda</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- about box -->
+    <div id="aboutbox" class="alert alert-dismissible alert-primary m-2">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Proyecto BigOven</strong> para traducir categorías y etiquetas (dietas) de comida
+    </div>
+
+    <!-- content -->
+    <div class="row m-1">
+        <div class="col-sm-6 col-md-3 col-lg-2 p-1">
+            <div class="card border-primary">
+                <div class="card-header">1. Elija una etiqueta</div>
+                <input id="filterleft" class="form-control-sm tagfilter" type="text" placeholder="Filter..">
+                <select id="tagsleft" multiple=""></select>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3 col-lg-2 p-1">
+            <div class="card border-primary">
+                <div class="card-header">2. Another tag</div>
+                <input id="filterright" class="form-control-sm tagfilter" type="text" placeholder="Filter..">
+                <select id="tagsright" multiple=""></select>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6 col-lg-8 p-1">
+            <div class="list-group">
+                <div class="list-group-item list-group-item-action active">Results</a>
+            </div>
+            <img id="artistsgif" class="loadinggif" src="https://cdnjs.cloudflare.com/ajax/libs/galleriffic/2.0.1/css/loader.gif" loop="infinite" />
+            <div id="artists" class="list-group"></ul>
+        </div>
+    </div>
+
+<script type="text/javascript">
+
+// Read URL parameters
+$.urlParam = function (name) {
+  var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.search);
+  return (results !== null) ? decodeURI(results[1]) || 0 : false;
+}
+// Ajax errors handler
+$.ajaxError = function(jqxhr, textStatus, error) {
+  var err = textStatus + ", " + error;
+  console.log("Request Failed: " + err);
+}
+
+// DocumentReady
+$(function() {
+
+    //// init
+    $('.loadinggif').hide();
+    $(".filter").val("");
+    // if about undefined
+    if ($.urlParam('about') == 0)
+        $('#aboutbox').hide();
+
+    //// ajax
+    // fetching initial tags
+    $.getJSON("api/tags/")
+    .done(function(result) {
+        // iterating through results
+        $.each(result, function(i, field) {
+            // populating tagsleft
+            $("#tagsleft").append('<option value="' + field.Tag + '">' + field.Tag + ' (' + field.c + ')</option>');
+        });
+    })
+    .fail($.ajaxError);
+
+    // tags left listener
+    $("#tagsleft").on('change', function() {
+        // clearing
+        $("#filterright").val("");
+        $("#tagsright, #artists").empty();
+        // creating JSON object from select
+        var tags = $('#tagsleft').val();
+        // encoding for http
+        tags = tags.map(x => encodeURIComponent(x));
+        var postBody = 'tags=' + JSON.stringify(tags);
+        $.post("api/tags/", postBody, function(result) {
+            // iterating through results
+            $.each(result, function(i, field) {
+                // populating tagsleft
+                $("#tagsright").append('<option value="' + field.Tag + '">' + field.Tag + ' (' + field.c + ')</option>');
+            });
+
+        }, 'json')
+        .fail($.ajaxError);
+    });
+
+    // right tags listener
+    $("#tagsright").on('change', function() {
+        // clearing
+        $("#artists").empty();
+        $('#artistsgif').show();
+        // creating JSON object from select
+        var tags1 = $('#tagsleft').val();
+        var tags2 = $('#tagsright').val();
+        // encoding for http
+        tags1 = tags1.map(x => encodeURIComponent(x));
+        tags2 = tags2.map(x => encodeURIComponent(x));
+        //console.log(tags2);
+        var postBody = 'tags=' + JSON.stringify({ tags1, tags2 });
+        //console.log(postBody);
+        $.post("api/artists/", postBody, function(result) {
+            $('#artistsgif').hide();
+            //iterating through results
+            $.each(result, function(i, field) {
+                // populating artists
+                $("#artists").append('<a href="' + field.Url + '" target="_blank" class="list-group-item list-group-item-action flex-column align-items-start"><div class="d-flex w-100 justify-content-between"><h5 class="mb-1">' + field.Artist + '</h5><small><span class="badge badge-pill badge-primary">' + field.c + '</span></small></div><p class="mb-1">' + field.Album + '</p><small>' + field.Tags + '</small></a>');
+            });
+
+        }, 'json')
+        .fail($.ajaxError);
+    });
+
+    //// filters
+    $("#filterleft").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#tagsleft option").filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
+
+    $("#filterright").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#tagsright option").filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
+
+});
+</script>
+
+    </body>
+</html>
