@@ -1,5 +1,5 @@
 // Read URL parameters
-$.urlParam = function (name) {
+$.urlParam = function(name) {
     var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.search);
     return (results !== null) ? decodeURI(results[1]) || 0 : false;
 }
@@ -7,6 +7,11 @@ $.urlParam = function (name) {
 $.ajaxError = function(jqxhr, textStatus, error) {
     var err = textStatus + ", " + error;
     console.log("Request Failed: " + err);
+}
+
+// Diets handler
+$.dietshandler = function(result) {
+    //iterating through results
 }
 
 // DocumentReady
@@ -81,7 +86,7 @@ $(function() {
 
     });
 
-    // form button listener
+    // submitbutton listener
     $("#submitbutton").click(function() {
         // reading selected tags
         var tags = $('#tags').val();
@@ -98,9 +103,7 @@ $(function() {
         var comments = $("#comments").val();
         // creating post body
         var postBody = 'post=' + JSON.stringify({ tags, name, operator, comments });
-        $.post("api/diets/", postBody, function(result) {
-            //iterating through results
-        }, 'json')
+        $.post("api/diets/", postBody, $.dietshandler, 'json')
         .fail($.ajaxError);
     });
 
