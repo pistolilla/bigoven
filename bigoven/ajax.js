@@ -136,6 +136,10 @@ $(function() {
 
     // deletebutton handler
     $(document).on('click', '.deletebtn', function (event) {
+        // confirm action
+        var r = confirm("¿Confirma que desea eliminar este elemento?");
+        if (r != true)
+            return;
         // reading item id and session values
         var rowid = this.id.replace("diet_", "");
         var tags = $('#tags').val();
