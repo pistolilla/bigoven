@@ -8,7 +8,7 @@ $db = new MyDB();
 
 // reading params
 try {
-    $body = $_POST['fetch'];
+    $body = $_POST['body'];
     $body = json_decode($body, true);
     // escaping single quotes
     $tagsArr = array_map($escapeQuotes, $body["tags"]);

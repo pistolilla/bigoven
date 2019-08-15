@@ -50,7 +50,7 @@
     <div class="row m-1">
         <div class="col-sm-12 col-md-3 col-lg-2 p-1">
             <!-- tags -->
-            <div class="card border-primary mb-2">
+            <div class="card border-info mb-2">
                 <div class="card-header">1. Elija una etiqueta</div>
                 <input id="filterleft" class="form-control-sm tagfilter" type="text" placeholder="Filtrar..">
                 <select id="tags" multiple=""></select>
@@ -58,19 +58,19 @@
             </div>
             <p id="tagssummary"></p>
             <!-- form -->
-            <div class="card border-info mt-2">
-                <div class="card-header">2. Cree una dieta</div>
-                <p class="mt-1 mb-0">Nombre:</p>
-                <input id="name" class="form-control-sm" id="exampleInputPassword1" required="" placeholder="(ej. Ovolactopescovegetariana)">
-                <p class="mt-1 mb-0">¿Es inclusiva o exclusiva?</p>
+            <div class="card border-info mt-1">
+                <div class="card-header">2. Agregue a una dieta</div>
+                <p class="m-1">Título:</p>
+                <input id="title" class="form-control-sm" id="exampleInputPassword1" required="" placeholder="(ej. Vegana estricta)">
+                <p class="m-1">¿Es inclusiva o exclusiva?</p>
                 <select id="operator" class="form-control-sm" id="exampleSelect1">
                     <option value="" selected="selected">(no aplica)</option>
                     <option value="inclusive">inclusiva</option>
                     <option value="exclusive">exclusiva</option>
                 </select>
-                <p class="mt-1 mb-0">Comentarios:</p>
-                <textarea id="comments" class="form-control-sm mb-1" rows="3" placeholder="(ej. huevo, #huevo, ovo)"></textarea>
-                <button id="submitbutton" type="button" class="btn btn-info btn-md btn-block">Crear</button>
+                <p class="m-1">Comentarios:</p>
+                <textarea id="comment" class="form-control-sm mb-1" rows="3" placeholder="(ej. #huevo, incluye orgánicos)"></textarea>
+                <button id="submitbutton" type="button" class="btn btn-info btn-md btn-block">Agregar</button>
             </div>
         </div>
         <div class="col-sm-12 col-md-9 col-lg-10 p-1">

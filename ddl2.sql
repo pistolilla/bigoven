@@ -60,3 +60,25 @@ CREATE TABLE IF NOT EXISTS recipe_ingredient (
     MetricUnit TEXT,
     UNIQUE(Id, ingredientId) ON CONFLICT IGNORE
 );
+
+DROP TABLE IF EXISTS diet;
+CREATE TABLE IF NOT EXISTS diet (
+    Title TEXT NOT NULL,
+    Operator TEXT,
+    Comment TEXT,
+    UNIQUE(Title) ON CONFLICT REPLACE
+);
+
+DROP TABLE IF EXISTS diet_tag;
+CREATE TABLE IF NOT EXISTS diet_tag (
+    dietTitle TEXT NOT NULL,
+    Tag TEXT NOT NULL,
+    UNIQUE(dietTitle, Tag) ON CONFLICT IGNORE
+);
+
+DROP TRIGGER IF EXISTS delete_diet_tag;
+CREATE TRIGGER delete_diet_tag
+BEFORE DELETE ON diet
+BEGIN
+    DELETE FROM diet_tag WHERE dietTitle IN (SELECT Title FROM diet WHERE diet.rowid = OLD.rowid);
+END;

@@ -11,7 +11,28 @@ $.ajaxError = function(jqxhr, textStatus, error) {
 
 // Diets handler
 $.dietshandler = function(result) {
+    $('#dietsgif').hide();
     //iterating through results
+    if (result.length == 0) {
+        $("#diets").append('<p class="m-1">Sin resultados</p>');
+    }
+    $.each(result, function(i, field) {
+        // pre-processing fields
+        var operator = field.Operator;
+        if (operator.length > 0)
+            operator = "(" + operator + ")";
+        // populating results
+        var htmlblock = `
+            <div class="list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">${field.Title} <small>${operator}</small></h5>
+                    <small><button type="button" id="diet_${field.rowid}" class="deletebtn badge btn badge-info">eliminar</button></small>
+                </div>
+                <p class="mb-1"><i>${field.Comment.replace("\n", "<br/>")}</i></p>
+                <small>${field.Tags}</small>
+            </div>`;
+        $("#diets").append(htmlblock);
+    });
 }
 
 // DocumentReady
@@ -48,7 +69,7 @@ $(function() {
         var tags = $('#tags').val();
         // showing selection to user
         $("#tagssummary").text(tags.join(", "));
-        var postBody = 'fetch=' + JSON.stringify({ tags });
+        var postBody = 'body=' + JSON.stringify({ tags });
 
         // recipes
         $.post("api/recipes/", postBody, function(result) {
@@ -83,26 +104,47 @@ $(function() {
         .fail($.ajaxError);
 
         // diets
+        $.post("api/diets/", postBody, $.dietshandler, 'json')
+        .fail($.ajaxError);
 
     });
 
     // submitbutton listener
     $("#submitbutton").click(function() {
-        // reading selected tags
+        // reading selected tags and form values
         var tags = $('#tags').val();
         if (tags.length == 0) {
             alert("No hay etiquetas seleccionadas");
             return;
         }
-        var name = $("#name").val();
-        if (name.length == 0) {
-            alert("El nombre es obligatorio");
+        var title = $("#title").val();
+        if (title.length == 0) {
+            alert("El título es obligatorio");
             return;
         }
         var operator = $("#operator").val();
-        var comments = $("#comments").val();
+        var comment = $("#comment").val();
         // creating post body
-        var postBody = 'post=' + JSON.stringify({ tags, name, operator, comments });
+        var postBody = 'body=' + JSON.stringify({ tags, title, operator, comment });
+        // clearing and showing gifs
+        $("#diets").empty();
+        $("#dietsgif").show();
+        // ajax call
+        $.post("api/diets/", postBody, $.dietshandler, 'json')
+        .fail($.ajaxError);
+    });
+
+    // deletebutton handler
+    $(document).on('click', '.deletebtn', function (event) {
+        // reading item id and session values
+        var rowid = this.id.replace("diet_", "");
+        var tags = $('#tags').val();
+        // creating post body
+        var postBody = 'body=' + JSON.stringify({ tags, rowid });
+        // clearing and showing gifs
+        $("#diets").empty();
+        $("#dietsgif").show();
+        // ajax call
         $.post("api/diets/", postBody, $.dietshandler, 'json')
         .fail($.ajaxError);
     });
