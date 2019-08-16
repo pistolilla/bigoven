@@ -65,7 +65,7 @@ else {
                 Title,
                 Comment,
                 Operator,
-                (SELECT GROUP_CONCAT(Tag, ', ') FROM diet_tag WHERE dietTitle = Title GROUP BY dietTitle ORDER BY Tag) AS Tags,
+                --(SELECT GROUP_CONCAT(Tag, ', ') FROM diet_tag WHERE dietTitle = Title GROUP BY dietTitle ORDER BY Tag) AS Tags,
                 COUNT(Id) AS c
             FROM (SELECT DISTINCT
                 d.rowid,
@@ -75,9 +75,8 @@ else {
                 rt.Id
             FROM diet_tag AS dt
                 LEFT JOIN diet AS d ON (d.Title = dt.dietTitle)
-                LEFT JOIN diet_tag AS dt2 ON (dt2.dietTitle = d.Title)
-                LEFT JOIN recipe_tag AS rt ON (dt2.Tag = rt.Tag)
-            ORDER BY d.Title, dt2.Tag)
+                LEFT JOIN recipe_tag AS rt ON (dt.Tag = rt.Tag)
+            ORDER BY d.Title, dt.Tag)
             GROUP BY rowid";
 }
 

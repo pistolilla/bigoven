@@ -58,12 +58,12 @@ else if ($body["diets"]) {
                 ri.TotalCalories,
                 ROUND(rr.StarRating, 1) AS StarRating,
                 rr.ReviewCount,
-                rr.FavoriteCount,
-                LOWER(GROUP_CONCAT(ii.Name, ', ')) AS Ingredients
+                --LOWER(GROUP_CONCAT(ii.Name, ', ')) AS Ingredients,
+                rr.FavoriteCount
             FROM recipe_info AS ri
                 LEFT JOIN recipe_rating AS rr ON (rr.Id = ri.Id)
-                LEFT JOIN recipe_ingredient AS rn ON (rn.Id = ri.Id)
-                LEFT JOIN ingredient_info AS ii ON (ii.Id = rn.ingredientId)
+                --LEFT JOIN recipe_ingredient AS rn ON (rn.Id = ri.Id)
+                --LEFT JOIN ingredient_info AS ii ON (ii.Id = rn.ingredientId)
             WHERE ri.Id IN (
                 SELECT DISTINCT Id FROM recipe_tag WHERE Tag IN (
                     SELECT Tag FROM diet_tag WHERE dietTitle IN ($dietsStr)
