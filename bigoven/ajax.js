@@ -68,7 +68,7 @@ $(function() {
         // creating JSON object from select
         var tags = $('#tags').val();
         // showing selection to user
-        $("#tagssummary").text(tags.join(", "));
+        $("#summary").html(tags.join(", "));
         var postBody = 'body=' + JSON.stringify({ tags });
 
         // recipes
