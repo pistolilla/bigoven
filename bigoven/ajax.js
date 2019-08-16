@@ -84,7 +84,7 @@ $(function() {
                 <div class="card">
                     <div class="row no-gutters">
                     <div style="max-width: 140px;">
-                        <img src="https://bigoven-res.cloudinary.com/image/upload/t_recipe-256/${field.PhotoUrl}" class="card-img">
+                        <img src="https://bigoven-res.cloudinary.com/image/upload/t_recipe-256/${field.PhotoUrl}" class="card-img" />
                     </div>
                     <div class="col">
                             <div class="card-body">

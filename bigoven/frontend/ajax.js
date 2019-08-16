@@ -49,32 +49,29 @@ $(function() {
             if (result.length == 0) {
                 $("#results").append('<p class="m-1">Sin resultados</p>');
             } else {
-                $("#resultshead").html(`Recetas <small>(${result.length})</small>`);
+                $("#resultshead").html(`Recetas (${result.length})`);
             }
             //iterating through results
             $.each(result, function(i, field) {
                 // populating results
                 $htmlblock = `
-                <div class="card">
-                    <div class="row no-gutters">
-                    <div style="max-width: 140px;">
-                        <img src="https://bigoven-res.cloudinary.com/image/upload/t_recipe-256/${field.PhotoUrl}" class="card-img">
+                <div style="width: 256px;">
+                  <div class="card">
+                    <img style="height: auto;" src="https://bigoven-res.cloudinary.com/image/upload/t_recipe-256/${field.PhotoUrl}" classs="card-img" />
+                    <div class="card-body">
+                      <a href="https://www.bigoven.com/recipe/r/${field.Id}" target="_blank">
+                        <h5 class="card-title">${field.Title}</h5>
+                      </a>
+                      <h6 class="card-subtitle text-muted"><i class="fa fa-hand-o-right" aria-hidden="true"></i> ${field.PrimaryIngredient}</h6>
                     </div>
-                    <div class="col">
-                            <div class="card-body">
-                                <a href="https://www.bigoven.com/recipe/r/${field.Id}" target="_blank">
-                                    <h5 class="mb-1">${field.Title}</h5>
-                                </a>
-                                <p class="mb-1"><i class="fa fa-hand-o-right" aria-hidden="true"></i> ${field.PrimaryIngredient}</p>
-                                <p class="mb-1"><i class="fa fa-heartbeat" aria-hidden="true"></i> ${field.FavoriteCount} | <i class="fa fa-star" aria-hidden="true"></i> ${field.StarRating} <small>(${field.ReviewCount})</small> | <i class="fa fa-thermometer-half" aria-hidden="true"></i> ${field.TotalCalories} Cal. | <i class="fa fa-users" aria-hidden="true"></i> ${field.Servings}</p>
-                                <small>${field.Ingredients}</small>
-                            </div>
+                    <div class="card-footer text-muted">
+                    <i class="fa fa-heartbeat" aria-hidden="true"></i> ${field.FavoriteCount} | <i class="fa fa-star" aria-hidden="true"></i> ${field.StarRating} | <i class="fa fa-thermometer-half" aria-hidden="true"></i> ${field.TotalCalories} Cal. | <i class="fa fa-users" aria-hidden="true"></i> ${field.Servings}
                     </div>
-                    </div>
+                  </div>
                 </div>`;
                 $("#results").append($htmlblock);
                 // break loop after n iterations
-                if (i > 50) {
+                if (i > 100) {
                     return false;
                 }
             });
