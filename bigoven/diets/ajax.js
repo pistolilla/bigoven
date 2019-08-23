@@ -47,7 +47,7 @@ $(function() {
 
     //// ajax
     // fetching initial tags
-    $.getJSON("api/tags/")
+    $.getJSON("/bigoven/api/tags/")
     .done(function(result) {
         // iterating through results
         $.each(result, function(i, field) {
@@ -72,7 +72,7 @@ $(function() {
         var postBody = 'body=' + JSON.stringify({ tags });
 
         // recipes
-        $.post("api/recipes/", postBody, function(result) {
+        $.post("/bigoven/api/recipes/", postBody, function(result) {
             $('#resultsgif').hide();
             //iterating through results
             if (result.length == 0) {
@@ -104,7 +104,7 @@ $(function() {
         .fail($.ajaxError);
 
         // diets
-        $.post("api/diets/", postBody, $.dietshandler, 'json')
+        $.post("/bigoven/api/diets/", postBody, $.dietshandler, 'json')
         .fail($.ajaxError);
 
     });
@@ -130,7 +130,7 @@ $(function() {
         $("#diets").empty();
         $("#dietsgif").show();
         // ajax call
-        $.post("api/diets/", postBody, $.dietshandler, 'json')
+        $.post("/bigoven/api/diets/", postBody, $.dietshandler, 'json')
         .fail($.ajaxError);
     });
 
@@ -149,7 +149,7 @@ $(function() {
         $("#diets").empty();
         $("#dietsgif").show();
         // ajax call
-        $.post("api/diets/", postBody, $.dietshandler, 'json')
+        $.post("/bigoven/api/diets/", postBody, $.dietshandler, 'json')
         .fail($.ajaxError);
     });
 

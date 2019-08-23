@@ -1,0 +1,6 @@
+[23-Aug-2019 14:02:09 UTC] PHP Fatal error:  Uncaught exception 'ErrorException' with message 'SQLite3::query(): Unable to prepare statement: 1, no such table: recipe_tag' in /home8/varelaco/public_html/intercostnet/bigoven/diets/api/tags/index.php:15
+Stack trace:
+#0 [internal function]: exceptions_error_handler(2, 'SQLite3::query(...', '/home8/varelaco...', 15, Array)
+#1 /home8/varelaco/public_html/intercostnet/bigoven/diets/api/tags/index.php(15): SQLite3->query('SELECT Tag, COU...')
+#2 {main}
+  thrown in /home8/varelaco/public_html/intercostnet/bigoven/diets/api/tags/index.php on line 15

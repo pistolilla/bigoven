@@ -21,7 +21,7 @@ $(function() {
 
     //// ajax
     // fetching initial diets
-    $.getJSON("../api/diets/")
+    $.getJSON("/bigoven/api/diets/")
     .done(function(result) {
         // iterating through results
         $.each(result, function(i, field) {
@@ -43,7 +43,7 @@ $(function() {
         var postBody = 'body=' + JSON.stringify({ diets });
 
         // recipes
-        $.post("../api/recipes/", postBody, function(result) {
+        $.post("/bigoven/api/recipes/", postBody, function(result) {
             $('#resultsgif').hide();
             // labeling from result length
             if (result.length == 0) {
@@ -57,11 +57,9 @@ $(function() {
                 $htmlblock = `
                 <div style="width: 256px;">
                   <div class="card">
-                    <img style="height: auto;" src="https://bigoven-res.cloudinary.com/image/upload/t_recipe-256/${field.PhotoUrl}" classs="card-img" />
+                    <a href="https://www.bigoven.com/recipe/r/${field.Id}" target="_blank"><img style="height: auto;" src="https://bigoven-res.cloudinary.com/image/upload/t_recipe-256/${field.PhotoUrl}" classs="card-img" /></a>
                     <div class="card-body">
-                      <a href="https://www.bigoven.com/recipe/r/${field.Id}" target="_blank">
-                        <h5 class="card-title">${field.Title}</h5>
-                      </a>
+                      <h5 class="card-title">${field.Title}</h5>
                       <h6 class="card-subtitle text-muted"><i class="fa fa-hand-o-right" aria-hidden="true"></i> ${field.PrimaryIngredient}</h6>
                     </div>
                     <div class="card-footer text-muted">

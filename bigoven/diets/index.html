@@ -1,0 +1,98 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Bigoven - Dietas (admin)</title>
+        <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootswatch/4.3.1/simplex/bootstrap.min.css">
+        <link href="//stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <style>
+            select {
+                height: 100px;
+                resize: vertical;
+                overflow: auto;
+            }
+            .loadinggif {
+                display: block;
+                margin: 10px auto;
+                width: 48;
+            }
+        </style>
+    </head>
+    <body>
+
+    <!-- navigation bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a href="/bigoven" class="navbar-brand">Bigoven</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarColor02">
+            <ul class="navbar-nav navbar-left">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dietas</a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="/bigoven/diets">Admin</a>
+                        <a class="dropdown-item" href="/bigoven/diets/view">Showcase</a>
+                    </div>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="?about=1">Ayuda</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- about box -->
+    <div id="aboutbox" class="alert alert-dismissible alert-primary m-2">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        Navegue en las categorías de <i><a href="https://www.bigoven.com" target="_blank">Big Oven</a></i> para crear dietas. Puede agrupar varias categorías en una sola dieta.
+    </div>
+
+    <!-- content -->
+    <div class="row m-1">
+        <div class="col-sm-12 col-md-3 col-lg-2 p-1">
+            <!-- tags -->
+            <div class="card border-info mb-2">
+                <div class="card-header">1. Elija una etiqueta</div>
+                <input id="filterleft" class="form-control-sm tagfilter" type="text" placeholder="Filtrar..">
+                <select id="tags" multiple=""></select>
+                <p class="m-1 text-center"><small>(<i>Ctrl + clic</i> para seleccionar más)</small></p>
+            </div>
+            <!-- summary -->
+            <p id="summary" class="font-weight-bold"></p>
+            <!-- form -->
+            <div class="card border-info mt-1">
+                <div class="card-header">2. Agregue a una dieta</div>
+                <p class="m-1">Título:</p>
+                <input id="title" class="form-control-sm" id="exampleInputPassword1" required="" placeholder="(ej. Vegana estricta)">
+                <p class="m-1">¿Es inclusiva o exclusiva?</p>
+                <select id="operator" class="form-control-sm" id="exampleSelect1">
+                    <option value="" selected="selected">(no aplica)</option>
+                    <option value="inclusive">inclusiva</option>
+                    <option value="exclusive">exclusiva</option>
+                </select>
+                <p class="m-1">Comentarios:</p>
+                <textarea id="comment" class="form-control-sm mb-1" rows="3" placeholder="(ej. #huevo, incluye orgánicos)"></textarea>
+                <button id="submitbutton" type="button" class="btn btn-info btn-md btn-block">Agregar</button>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-9 col-lg-10 p-1">
+            <!-- diets -->
+            <div class="list-group">
+                <div class="list-group-item list-group-item-action active">Dietas</div>
+            </div>
+            <img id="dietsgif" class="loadinggif" src="https://cdnjs.cloudflare.com/ajax/libs/galleriffic/2.0.1/css/loader.gif" loop="infinite" />
+            <div id="diets" class="list-group mb-1"><p class="m-1">Sin resultados</p></div>
+            <!-- recipes -->
+            <div class="list-group">
+                <div class="list-group-item list-group-item-action active">Recetas</div>
+            </div>
+            <img id="resultsgif" class="loadinggif" src="https://cdnjs.cloudflare.com/ajax/libs/galleriffic/2.0.1/css/loader.gif" loop="infinite" />
+            <div id="results" class="list-group mb-1"><p class="m-1">Sin resultados</p></div>
+        </div>
+    </div>
+    <script type="text/javascript" src="ajax.js"></script>
+    </body>
+</html>

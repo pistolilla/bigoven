@@ -2,7 +2,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Bigoven - Front-end</title>
+        <title>Bigoven - Dietas (showcase)</title>
         <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootswatch/4.3.1/simplex/bootstrap.min.css">
         <link href="//stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
         <script src="//ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -24,15 +24,19 @@
 
     <!-- navigation bar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a href="?" class="navbar-brand">Bigoven <small>(beta)</small></a>
+        <a href="/bigoven" class="navbar-brand">Bigoven</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-
         <div class="collapse navbar-collapse" id="navbarColor02">
             <ul class="navbar-nav navbar-left">
-                <li class="nav-item"><a class="nav-link" href="/bigoven">Back-end</a></li>
-                <li class="nav-item"><a class="nav-link" href="/bigoven/frontend">Front-end</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dietas</a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="/bigoven/diets">Admin</a>
+                        <a class="dropdown-item" href="/bigoven/diets/view">Showcase</a>
+                    </div>
+                </li>
             </ul>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item"><a class="nav-link" href="?about=1">Ayuda</a></li>
@@ -43,11 +47,12 @@
     <!-- about box -->
     <div id="aboutbox" class="alert alert-dismissible alert-primary m-2">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
-        Explore las recetas de cada dieta o union de dietas. Para crear más dietas vaya al <i><a href="/bigoven">Back-end</a></i>.
+        Explore las recetas de cada dieta o union de dietas. Para crear más dietas vaya a la sección <i><a href="/bigoven/diets">Admin</a></i>.
     </div>
 
     <!-- content -->
     <div class="row m-1">
+        <!-- left panel -->
         <div class="col-sm-12 col-md-3 col-lg-2 p-1">
             <!-- diets -->
             <div class="card border-info mb-2">
@@ -58,7 +63,19 @@
             </div>
             <!-- summary -->
             <p id="summary" class="font-weight-bold"></p>
+            <!-- primary ingredient -->
+            <div class="form-group">
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" class="custom-control-input" id="pi_chicken" checked="">
+                    <label class="custom-control-label" for="pi_chicken">chiken</label>
+                </div>
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" class="custom-control-input" id="pi_(undefined)" checked="">
+                    <label class="custom-control-label" for="pi_(undefined)">(undefined)</label>
+                </div>
+            </div>
         </div>
+        <!-- right panel -->
         <div class="col-sm-12 col-md-9 col-lg-10 p-1">
             <div class="list-group">
                 <div id="resultshead" class="list-group-item list-group-item-action active">Recetas</div>
