@@ -43,14 +43,16 @@ if ($body["tags"]) {
 }
 // via diets
 else {
-    // default
-    $dietsArr = "";
-
-    // array contains "diets"
+    // array contains "diets" or/and "pis"
     if ($body["diets"]) {
         // escaping single quotes
         $dietsArr = array_map($escapeQuotes, $body["diets"]);
         $dietsStr = join("', '", $dietsArr);
+    }
+    if ($body["pis"]) {
+        // escaping single quotes
+        $pisArr = array_map($escapeQuotes, $body["pis"]);
+        $pisStr = join("', '", $pisArr);
     }
 
     // query
@@ -64,17 +66,16 @@ else {
         ri.TotalCalories,
         ROUND(rr.StarRating, 1) AS StarRating,
         rr.ReviewCount,
-        --LOWER(GROUP_CONCAT(ii.Name, ', ')) AS Ingredients,
         rr.FavoriteCount
     FROM recipe_info AS ri
         LEFT JOIN recipe_rating AS rr ON (rr.Id = ri.Id)
-        --LEFT JOIN recipe_ingredient AS rn ON (rn.Id = ri.Id)
-        --LEFT JOIN ingredient_info AS ii ON (ii.Id = rn.ingredientId)
-    WHERE ri.Id IN (
-        SELECT DISTINCT Id FROM recipe_tag WHERE Tag IN (
-            SELECT Tag FROM diet_tag WHERE dietTitle IN ('$dietsStr')
+    WHERE
+        ri.PrimaryIngredient IN ('$pisStr')
+        AND ri.Id IN (
+            SELECT DISTINCT Id FROM recipe_tag WHERE Tag IN (
+                SELECT Tag FROM diet_tag WHERE dietTitle IN ('$dietsStr')
+            )
         )
-    )
     GROUP BY ri.Id
     ORDER BY FavoriteCount DESC, StarRating DESC, ri.Id";
 }
