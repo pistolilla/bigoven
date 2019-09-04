@@ -62,6 +62,12 @@ else {
         ri.Servings,
         ri.PhotoUrl,
         ri.PrimaryIngredient,
+        (
+            SELECT GROUP_CONCAT(ii.IdT, ', ')
+            FROM recipe_ingredient AS rin
+            INNER JOIN ingredient_info AS ii ON (rin.ingredientId = ii.Id)
+            WHERE rin.Id = ri.Id AND ii.IdT NOT NULL
+        ) AS Ingredients,
         ri.TotalMinutes,
         ri.TotalCalories,
         ROUND(rr.StarRating, 1) AS StarRating,
