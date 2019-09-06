@@ -13,8 +13,8 @@ if ($_GET['primary']) {
 } else {
     $sql = "SELECT DISTINCT IdT
     FROM ingredient_info
-    WHERE IdT NOT NULL
-    ORDER BY IdT";
+    WHERE Active
+    ORDER BY LOWER(IdT)";
 }
 
 $res = $db->query($sql);

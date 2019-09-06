@@ -48,6 +48,7 @@ CREATE TABLE IF NOT EXISTS ingredient_info (
 	Department TEXT,
 	ReferenceUrl TEXT,
 	IdT TEXT,
+	Active INTEGER NOT NULL DEFAULT(0),
     UNIQUE(Id) ON CONFLICT IGNORE
 );
 
