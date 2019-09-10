@@ -14,7 +14,7 @@ if ($_GET['primary']) {
     $sql = "SELECT DISTINCT IdT
     FROM ingredient_info
     WHERE Active
-    ORDER BY LOWER(IdT)";
+    ORDER BY IdT";
 }
 
 $res = $db->query($sql);
